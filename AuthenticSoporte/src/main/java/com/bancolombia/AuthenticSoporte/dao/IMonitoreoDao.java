@@ -7,6 +7,8 @@ import com.bancolombia.AuthenticSoporte.Exception.BusinessException;
 
 public interface IMonitoreoDao {
 	
-	public List<Monitoreo> obtenerMonitoreo() throws BusinessException;
+	public List<Monitoreo> obtenerMonitoreoAprobado() throws BusinessException;
+	
+	public List<Monitoreo> obtenerMonitoreoRechazado() throws BusinessException;
 
 }

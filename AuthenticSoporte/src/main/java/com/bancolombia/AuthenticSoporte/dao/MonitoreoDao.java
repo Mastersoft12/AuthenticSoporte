@@ -2,7 +2,7 @@ package com.bancolombia.AuthenticSoporte.dao;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.function.Supplier;
 
 import javax.naming.NamingException;
 
@@ -15,8 +15,7 @@ import com.bancolombia.AuthenticSoporte.Entity.Monitoreo;
 import com.bancolombia.AuthenticSoporte.Exception.BusinessException;
 import com.bancolombia.AuthenticSoporte.bean.IDatasource;
 import com.bancolombia.AuthenticSoporte.mapper.MonitoreoMapper;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+import com.bancolombia.AuthenticSoporte.utilidades.UtilidadMonitoreoQuery;
 
 
 @Component("monitoreoDao")
@@ -32,12 +31,11 @@ public class MonitoreoDao implements IMonitoreoDao {
 	
 
 	
-	public List<Monitoreo> obtenerMonitoreo() throws BusinessException{
-		String sql = "";
+	public List<Monitoreo> obtenerMonitoreoAprobado() throws BusinessException{
 		List<Monitoreo> monitoreo = null;
-		sql = queryMonitoreo();		
+		Supplier<String> MonitoreoSupplier = UtilidadMonitoreoQuery::queryMonitoreo;
 		try {
-			 monitoreo = jdbcTemplateConexion.obtenerJdbcTemplate().query(sql, new MonitoreoMapper());
+			 monitoreo = jdbcTemplateConexion.obtenerJdbcTemplate().query(MonitoreoSupplier.get(), new MonitoreoMapper());
 		} catch (DataAccessException e) {
 	    //    logger.info("Erro al accesar a la base de datos: "+e);
 		} catch (IllegalArgumentException e) {
@@ -54,19 +52,28 @@ public class MonitoreoDao implements IMonitoreoDao {
 		return monitoreo;
 	}
 	
-	public String queryMonitoreo(){
-		StringBuilder query = new StringBuilder(); 
-		query.append(" SELECT 'Aprobadas' AS DESCRIPCION,COUNT (*) AS CANTIDAD,");
-		query.append(" AVG (EXTRACT (SECOND FROM (EML.EML_RESPONSE_TIME - LOG.TRL_SYSTEM_TIMESTAMP))) AS PROMEDIO");
-		query.append(" FROM bcolombia_owner.TRANSACTION_LOG LOG, bcolombia_owner.ENDPOINT_MESSAGE_LOG EML");
-		query.append(" WHERE LOG.TRL_MESSAGE_UID = EML.EML_MESSAGE_UID");
-		query.append(" AND LOG.TRL_SYSTEM_TIMESTAMP BETWEEN TO_DATE ('2017-11-23 000000','yyyy/mm/dd HH24MISS')");
-		query.append(" AND TO_DATE ('2017-11-23 235959','yyyy/mm/dd HH24MISS')");
-		query.append(" AND LOG.TRL_ORIGIN_RESULT_CODE = '00'");
-		query.append(" AND EML.EML_REQ_CONN_URI LIKE '%/Redeban/%'");
-		query.append(" GROUP BY 'Aprobadas'");
-		return query.toString();
+	public List<Monitoreo> obtenerMonitoreoRechazado() throws BusinessException{
+		List<Monitoreo> monitoreo = null;
+		Supplier<String> MonitoreoSupplier = UtilidadMonitoreoQuery::queryMonitoreoRechazada;
+		try {
+			 monitoreo = jdbcTemplateConexion.obtenerJdbcTemplate().query(MonitoreoSupplier.get(), new MonitoreoMapper());
+		} catch (DataAccessException e) {
+	    //    logger.info("Erro al accesar a la base de datos: "+e);
+		} catch (IllegalArgumentException e) {
+	     //   logger.info("Argumento ilegal: "+e);
+	        throw new BusinessException("Error en el proceso de negocio ");
+		} catch (NamingException e) {
+	      //  logger.error("error NamingException: "+e);
+	        throw new BusinessException("Error en el proceso de negocio ");
+		} catch (SQLException e) {
+	     //   logger.error("Error en la base de datos: "+e);
+	        throw new BusinessException("Error en el proceso de negocio ");
+
+		}
+		return monitoreo;
 	}
+	
+	
 
 
 }
