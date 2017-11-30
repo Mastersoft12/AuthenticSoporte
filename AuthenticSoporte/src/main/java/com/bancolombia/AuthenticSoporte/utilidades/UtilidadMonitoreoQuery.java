@@ -2,6 +2,11 @@ package com.bancolombia.AuthenticSoporte.utilidades;
 
 public class UtilidadMonitoreoQuery {
 	
+	  private UtilidadMonitoreoQuery() {
+		    throw new IllegalStateException("Utility class");
+	  }
+	
+	
 	public static final String queryMonitoreo(){
 		StringBuilder query = new StringBuilder(); 
 		query.append(" SELECT 'Aprobadas' AS DESCRIPCION,COUNT (*) AS CANTIDAD,");

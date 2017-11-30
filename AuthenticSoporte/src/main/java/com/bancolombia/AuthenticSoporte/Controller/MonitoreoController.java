@@ -13,12 +13,11 @@ import com.bancolombia.AuthenticSoporte.Business.IMonitoreoBusiness;
 import com.bancolombia.AuthenticSoporte.Entity.Monitoreo;
 import com.bancolombia.AuthenticSoporte.Exception.BusinessException;
 import com.bancolombia.AuthenticSoporte.Exception.ErrorRest;
-import com.bancolombia.AuthenticSoporte.dao.IMonitoreoDao;
 
 @RestController
 public class MonitoreoController {
 	
-	private static final String errorProcesoNegocio = "Error en el proceso de Negocio";
+	private static final String ERRORPROCESONEGOCIO = "Error en el proceso de Negocio";
 
 	@Autowired
 	@Qualifier("monitoreoBusiness")
@@ -30,9 +29,9 @@ public class MonitoreoController {
 		try{
 			resultado = monitoreo.generarInformeMonitoreo();
 		}catch (BusinessException e) {
-			return new ResponseEntity<ErrorRest>(new ErrorRest(errorProcesoNegocio),HttpStatus.BAD_REQUEST);	
+			return new ResponseEntity<>(new ErrorRest(ERRORPROCESONEGOCIO),HttpStatus.BAD_REQUEST);	
 		}
-		return new ResponseEntity<List<Monitoreo>>(resultado,HttpStatus.FOUND);
+		return new ResponseEntity<>(resultado,HttpStatus.FOUND);
 	}
 
 }
