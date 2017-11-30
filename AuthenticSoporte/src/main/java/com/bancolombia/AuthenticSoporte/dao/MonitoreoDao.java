@@ -1,11 +1,14 @@
 package com.bancolombia.AuthenticSoporte.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 import javax.naming.NamingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -29,47 +32,44 @@ public class MonitoreoDao implements IMonitoreoDao {
 	@Qualifier("jdbcTemplateConexion")
 	private JdbcTemplateConexion jdbcTemplateConexion;
 	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 
 	
 	public List<Monitoreo> obtenerMonitoreoAprobado() throws BusinessException{
-		List<Monitoreo> monitoreo = null;
+		List<Monitoreo> monitoreo = new ArrayList<>();
 		Supplier<String> MonitoreoSupplier = UtilidadMonitoreoQuery::queryMonitoreo;
 		try {
+			logger.info("Inicio ejecucion del query de monitoreo Aprobadas...");
 			 monitoreo = jdbcTemplateConexion.obtenerJdbcTemplate().query(MonitoreoSupplier.get(), new MonitoreoMapper());
-		} catch (DataAccessException e) {
-	    //    logger.info("Erro al accesar a la base de datos: "+e);
+		} catch (DataAccessException | SQLException e) {
+	         logger.error("Erro al accesar a los datos de la base de datos: "+e);
+	         throw new BusinessException("Error en el proceso de negocio "+ e);
 		} catch (IllegalArgumentException e) {
-	     //   logger.info("Argumento ilegal: "+e);
+	         logger.error("Erro, Indice fuera de los límites: "+e);
 	        throw new BusinessException("Error en el proceso de negocio ");
 		} catch (NamingException e) {
-	      //  logger.error("error NamingException: "+e);
+			  logger.error("Error en la acción solicitada: "+e);
 	        throw new BusinessException("Error en el proceso de negocio ");
-		} catch (SQLException e) {
-	     //   logger.error("Error en la base de datos: "+e);
-	        throw new BusinessException("Error en el proceso de negocio ");
-
-		}
+		} 
 		return monitoreo;
 	}
 	
 	public List<Monitoreo> obtenerMonitoreoRechazado() throws BusinessException{
-		List<Monitoreo> monitoreo = null;
+		List<Monitoreo> monitoreo = new ArrayList<>();
 		Supplier<String> MonitoreoSupplier = UtilidadMonitoreoQuery::queryMonitoreoRechazada;
 		try {
 			 monitoreo = jdbcTemplateConexion.obtenerJdbcTemplate().query(MonitoreoSupplier.get(), new MonitoreoMapper());
-		} catch (DataAccessException e) {
-	    //    logger.info("Erro al accesar a la base de datos: "+e);
+		} catch (DataAccessException | SQLException e) {
+	         logger.error("Erro al accesar a los datos de la base de datos: "+e);
+	         throw new BusinessException("Error en el proceso de negocio "+ e);
 		} catch (IllegalArgumentException e) {
-	     //   logger.info("Argumento ilegal: "+e);
+	         logger.error("Erro, Indice fuera de los límites: "+e);
 	        throw new BusinessException("Error en el proceso de negocio ");
 		} catch (NamingException e) {
-	      //  logger.error("error NamingException: "+e);
+			  logger.error("Error en la acción solicitada: "+e);
 	        throw new BusinessException("Error en el proceso de negocio ");
-		} catch (SQLException e) {
-	     //   logger.error("Error en la base de datos: "+e);
-	        throw new BusinessException("Error en el proceso de negocio ");
-
-		}
+		} 
 		return monitoreo;
 	}
 	

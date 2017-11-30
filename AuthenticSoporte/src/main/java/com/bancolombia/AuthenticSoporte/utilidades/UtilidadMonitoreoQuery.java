@@ -23,7 +23,7 @@ public class UtilidadMonitoreoQuery {
 		query.append(" FROM bcolombia_owner.TRANSACTION_LOG LOG, bcolombia_owner.ENDPOINT_MESSAGE_LOG EML");
 		query.append(" WHERE LOG.TRL_MESSAGE_UID = EML.EML_MESSAGE_UID");
 		query.append(" AND LOG.TRL_SYSTEM_TIMESTAMP BETWEEN TRUNC(SYSDATE)");
-		query.append(" AND SYSDATE");
+		query.append(" AND SYSDATE ");
 		query.append(" AND LOG.TRL_ORIGIN_RESULT_CODE <> '00'");
 		query.append(" AND EML.EML_REQ_CONN_URI LIKE '%/Redeban/%'");
 		query.append(" GROUP BY 'Rechazadas'");

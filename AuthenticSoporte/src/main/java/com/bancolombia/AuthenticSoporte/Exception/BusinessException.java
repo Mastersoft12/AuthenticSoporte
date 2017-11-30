@@ -10,7 +10,7 @@ public class BusinessException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
 	public BusinessException(String mensaje){
-		super(String.format("Error en proceso: "+mensaje+" "));
+		super(String.format("Error en proceso de negocio: "+mensaje+" "));
 	}
 
 }
